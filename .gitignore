@@ -22,3 +22,39 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+# Local history for your editor
+.history
+# MacOS
+*.DS_Store
+# Windows
+Thumbs.db
+# Linux
+*~
+# Temporary files
+*.tmp
+*.temp
+# Build output
+build
+# Coverage directory used by tools like istanbul and coverage
+coverage
+# Dependency directories
+jspm_packages/
+# Compiled source #
+dist/
+# TypeScript v1 declaration files
+typings/
+# Optional npm cache directory
+.npm
+# Optional eslint cache
+.eslintcache
+# Optional stylelint cache
+.stylelintcache
+# Optional cache directory for Babel
+.cache
