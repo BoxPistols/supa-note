@@ -10,14 +10,25 @@ import {
   Button,
   AlertColor,
 } from "@mui/material";
-import {Add as AddIcon} from "@mui/icons-material";
+import {Add as AddIcon, Logout as LogoutIcon} from "@mui/icons-material";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 import {NoteForm} from "./components/NoteForm";
 import {NotesList} from "./components/NotesList";
 import {DeleteConfirmDialog} from "./components/DeleteConfirmDialog";
 import {Notification} from "./components/Notification";
-import {Note, notesApi} from "./lib/supabase";
+import {Note, notesApi, authApi} from "./lib/supabase";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
+import AuthRequired from "./components/AuthRequired";
 
-function App() {
+// ノート一覧と操作を行うメインコンポーネントを別コンポーネントとして抽出
+function NotesApp() {
   // 状態管理
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,6 +40,7 @@ function App() {
     message: "",
     severity: "info" as AlertColor,
   });
+  const navigate = useNavigate();
 
   // ノート一覧を取得
   const fetchNotes = async () => {
@@ -137,6 +149,16 @@ function App() {
           <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
             シンプルノートアプリ
           </Typography>
+          <Button
+            color="inherit"
+            startIcon={<LogoutIcon />}
+            onClick={async () => {
+              await authApi.signOut();
+              navigate("/login");
+            }}
+          >
+            ログアウト
+          </Button>
         </Toolbar>
       </AppBar>
 
@@ -194,6 +216,26 @@ function App() {
         onClose={handleCloseNotification}
       />
     </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route
+          path="/"
+          element={
+            <AuthRequired>
+              <NotesApp />
+            </AuthRequired>
+          }
+        />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
